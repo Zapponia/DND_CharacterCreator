@@ -12,21 +12,42 @@ namespace CharacterCreator
         static void Main(string[] args)
         {
             Character character = new Character();
+            character.RaceSelector(character);
+            character.CharacterNaming(character);
+            Console.WriteLine("All right {0} now its time to roll your stats", character.name);
+            Thread.Sleep(2000);
             character.StatSelectorAndRolling(character);
-            Console.ReadKey();
+            Console.Clear();
+            Console.WriteLine(character.name + "\n" +
+                "Strenght: " + character.strength + "\n" +
+                "Dexterity: " + character.dexterity + "\n" +
+                "Constitution: " + character.constitution + "\n" +
+                "Intelligence: " + character.intelligence + "\n" +
+                "Wisdom: " + character.wisdom + "\n" +
+                "Charisma: " + character.charisma + "\n");
         }
     }
 
-
+     public enum Race
+     {
+        Dwarf,
+        Elf,
+        Gnome,
+        Halfling,
+        HalfElf,
+        HalfOrc,
+        Human
+     }
     class Character
     {
-        string name;
-        int strength = 0;
-        int dexterity = 0;
-        int constitution = 0;
-        int intelligence = 0;
-        int wisdom = 0;
-        int charisma = 0;
+        public Race race;
+        public string name;
+        public int strength = 0;
+        public int dexterity = 0;
+        public int constitution = 0;
+        public int intelligence = 0;
+        public int wisdom = 0;
+        public int charisma = 0;
 
         /// <summary>
         /// Function to name the character
@@ -134,13 +155,14 @@ namespace CharacterCreator
 
                 while (statPick)
                 {
-                    Console.WriteLine("Write the number for the stat you want to place your roll do you want to put it? \n" +
-                        "1. Strength \n" +
-                        "2. Dexterity \n" +
-                        "3. Constitution \n" +
-                        "4. Intelligence \n" +
-                        "5. Wisdom \n" +
-                        "6. Charisma");
+                    Console.Clear();
+                    Console.WriteLine("Write the number for the stat you want to place your roll ({6}) do you want to put it? \n" +
+                        "1. Strength {0} \n" +
+                        "2. Dexterity {1} \n" +
+                        "3. Constitution {2} \n" +
+                        "4. Intelligence {3} \n" +
+                        "5. Wisdom {4} \n" +
+                        "6. Charisma {5}", character.strength, character.dexterity, character.constitution, character.intelligence, character.wisdom, character.charisma, rollTotal);
 
                     string input = Console.ReadLine();
                     switch (input)
@@ -216,6 +238,55 @@ namespace CharacterCreator
 
                 }
             }
+        }
+
+        public void RaceSelector(Character character)
+        {
+            Console.WriteLine("Please select your characters race \n" +
+                "1. Dwarf \n" +
+                "2. Elf \n" +
+                "3. Gnome \n" +
+                "4. Halfling \n" +
+                "5. Half-Elf \n" +
+                "6. Half-Orc \n" +
+                "7. Human");
+            string input = Console.ReadLine();
+            switch(input)
+            {
+                case "1":
+                    character.race = Race.Dwarf;
+                    character.constitution = character.constitution + 2;
+                    character.charisma = character.charisma - 2;
+                    break;
+                case "2":
+                    character.race = Race.Elf;
+                    character.dexterity = character.dexterity + 2;
+                    character.constitution = character.constitution - 2;
+                    break;
+                case "3":
+                    character.race = Race.Gnome;
+                    character.constitution = character.constitution + 2;
+                    character.strength = character.strength - 2;
+                    break;
+                case "4":
+                    character.race = Race.Halfling;
+                    character.dexterity = character.dexterity + 2;
+                    character.strength = character.strength - 2;
+                    break;
+                case "5":
+                    character.race = Race.HalfElf;
+                    break;
+                case "6":
+                    character.race = Race.HalfOrc;
+                    character.strength = character.strength + 2;
+                    character.intelligence = character.intelligence - 2;
+                    character.charisma = character.charisma - 2;
+                    break;
+                case "7":
+                    character.race = Race.Human;
+                    break;
+            }
+            Console.Clear();
         }
 
     }
