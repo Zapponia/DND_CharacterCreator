@@ -148,6 +148,7 @@ namespace CharacterCreator
                     else
                     {
                         Console.WriteLine("You rolled a {0}, {1}, {2} for a total of {3}", die1, die2, die3, rollTotal);
+                        Console.ReadKey();
                         roll = false;
                     }
 
