@@ -18,7 +18,9 @@ namespace CharacterCreator
             Thread.Sleep(2000);
             character.StatSelectorAndRolling(character);
             Console.Clear();
+            character.ClassSelector(character);
             Console.WriteLine(character.name + "\n" +
+                character.characterClass + "\n" +
                 "Strenght: " + character.strength + "\n" +
                 "Dexterity: " + character.dexterity + "\n" +
                 "Constitution: " + character.constitution + "\n" +
@@ -38,8 +40,25 @@ namespace CharacterCreator
         HalfOrc,
         Human
      }
+    
+    public enum Class
+    {
+        Barbarian,
+        Bard,
+        Cleric,
+        Druid,
+        Fighter,
+        Monk,
+        Paladin,
+        Ranger,
+        Rogue,
+        Sorcerer,
+        Wizard
+    }
+
     class Character
     {
+        public Class characterClass;
         public Race race;
         public string name;
         public int strength = 0;
@@ -169,7 +188,7 @@ namespace CharacterCreator
                     switch (input)
                     {
                         case "1":
-                            if (character.strength == 0)
+                            if (character.strength < 6)
                             {
                                 character.strength = rollTotal;
                                 statPick = false;
@@ -180,7 +199,7 @@ namespace CharacterCreator
                             }
                             break;
                         case "2":
-                            if (character.dexterity == 0)
+                            if (character.dexterity < 6)
                             {
                                 character.dexterity = rollTotal;
                                 statPick = false;
@@ -191,7 +210,7 @@ namespace CharacterCreator
                             }
                             break;
                         case "3":
-                            if (character.constitution == 0)
+                            if (character.constitution < 6)
                             {
                                 character.constitution = rollTotal;
                                 statPick = false;
@@ -202,7 +221,7 @@ namespace CharacterCreator
                             }
                             break;
                         case "4":
-                            if (character.intelligence == 0)
+                            if (character.intelligence < 6)
                             {
                                 character.intelligence = rollTotal;
                                 statPick = false;
@@ -213,7 +232,7 @@ namespace CharacterCreator
                             }
                             break;
                         case "5":
-                            if (character.wisdom == 0)
+                            if (character.wisdom < 6)
                             {
                                 character.wisdom = rollTotal;
                                 statPick = false;
@@ -224,7 +243,7 @@ namespace CharacterCreator
                             }
                             break;
                         case "6":
-                            if (character.charisma == 0)
+                            if (character.charisma < 6)
                             {
                                 character.charisma = rollTotal;
                                 statPick = false;
@@ -235,12 +254,14 @@ namespace CharacterCreator
                             }
                             break;
                     }
-
-
                 }
             }
         }
 
+        /// <summary>
+        /// Selecting race for the character, also adds the race modifiers
+        /// </summary>
+        /// <param name="character">Character to select race for</param>
         public void RaceSelector(Character character)
         {
             Console.WriteLine("Please select your characters race \n" +
@@ -290,6 +311,61 @@ namespace CharacterCreator
             Console.Clear();
         }
 
-    }
 
+        public void ClassSelector(Character character)
+        {
+            Console.WriteLine("Now that you have your stats, please select your class \n" +
+                "1. Barbarian                 {0}\n" +
+                "2. Bard                      {1}\n" +
+                "3. Cleric                    {2}\n" +
+                "4. Druid                     {3}\n" +
+                "5. Fighter                   {4}\n" +
+                "6. Monk                      {5}\n" +
+                "7. Paladin \n" +
+                "8. Ranger \n" +
+                "9. Rogue \n" +
+                "10. Sorcerer \n" +
+                "11. Wizard", character.strength, character.dexterity, character.constitution, character.intelligence, character.wisdom, character.charisma);
+
+            string input = Console.ReadLine();
+            switch(input)
+            {
+                case "1":
+                    character.characterClass = Class.Barbarian;
+                    break;
+                case "2":
+                    character.characterClass = Class.Bard;
+                    break;
+                case "3":
+                    character.characterClass = Class.Cleric;
+                    break;
+                case "4":
+                    character.characterClass = Class.Druid;
+                    break;
+                case "5":
+                    character.characterClass = Class.Fighter;
+                    break;
+                case "6":
+                    character.characterClass = Class.Monk;
+                    break;
+                case "7":
+                    character.characterClass = Class.Paladin;
+                    break;
+                case "8":
+                    character.characterClass = Class.Ranger;
+                    break;
+                case "9":
+                    character.characterClass = Class.Rogue;
+                    break;
+                case "10":
+                    character.characterClass = Class.Sorcerer;
+                    break;
+                case "11":
+                    character.characterClass = Class.Wizard;
+                    break;
+
+
+            }
+        }
+    }
 }
