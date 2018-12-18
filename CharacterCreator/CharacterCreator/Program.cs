@@ -19,8 +19,9 @@ namespace CharacterCreator
             character.StatSelectorAndRolling(character);
             Console.Clear();
             character.ClassSelector(character);
-            Console.WriteLine(character.name + "\n" +
-                character.characterClass + "\n" +
+            Console.WriteLine("YOUR CHARACTER \n" +
+                "Name: " + character.name + "\n" +
+                "Class: " + character.characterClass + "\n" +
                 "Strenght: " + character.strength + "\n" +
                 "Dexterity: " + character.dexterity + "\n" +
                 "Constitution: " + character.constitution + "\n" +
@@ -114,6 +115,7 @@ namespace CharacterCreator
             int die1;
             int die2;
             int die3;
+            int die4;
             for (int b = 0; b < 6; b +=1)
             {
                 bool roll = true;
@@ -121,6 +123,7 @@ namespace CharacterCreator
                 while (roll)
                 {
                     Random d6 = new Random();
+
                     //Loop for shit and giggles
                     for (int i = 0; i < 3; i += 1)
                     {
@@ -155,18 +158,29 @@ namespace CharacterCreator
                     }
                     die3 = d6.Next(1, 7);
 
-                    rollTotal = die1 + die2 + die3;
+                    for (int i = 0; i < 3; i += 1)
+                    {
+                        for (int a = 1; a <= 6; a += 1)
+                        {
+                            Console.WriteLine(a);
+                            Thread.Sleep(10);
+                            Console.Clear();
+                        }
+                    }
+                    die4 = d6.Next(1, 7);
+
+                    rollTotal = DieSelect(die1, die2, die3, die4);
 
                     if (rollTotal < 6)
                     {
-                        Console.WriteLine("You rolled a {0}, {1}, {2} for a total of {3}", die1, die2, die3, rollTotal);
+                        Console.WriteLine("You rolled a {0}, {1}, {2}, {3}, and removing the smallest number you have a total of {4}", die1, die2, die3, die4, rollTotal);
                         Console.WriteLine("Unfortunately that's not enough to put into a stat, press enter to reroll");
                         Console.ReadKey();
                     }
 
                     else
                     {
-                        Console.WriteLine("You rolled a {0}, {1}, {2} for a total of {3}", die1, die2, die3, rollTotal);
+                        Console.WriteLine("You rolled a {0}, {1}, {2}, {3} and removing the smallest number you have a total of {4}", die1, die2, die3, die4, rollTotal);
                         Console.ReadKey();
                         roll = false;
                     }
@@ -190,7 +204,7 @@ namespace CharacterCreator
                         case "1":
                             if (character.strength < 6)
                             {
-                                character.strength = rollTotal;
+                                character.strength = rollTotal + character.strength;
                                 statPick = false;
                             }
                             else
@@ -201,7 +215,7 @@ namespace CharacterCreator
                         case "2":
                             if (character.dexterity < 6)
                             {
-                                character.dexterity = rollTotal;
+                                character.dexterity = rollTotal + character.dexterity;
                                 statPick = false;
                             }
                             else
@@ -212,7 +226,7 @@ namespace CharacterCreator
                         case "3":
                             if (character.constitution < 6)
                             {
-                                character.constitution = rollTotal;
+                                character.constitution = rollTotal + character.constitution;
                                 statPick = false;
                             }
                             else
@@ -223,7 +237,7 @@ namespace CharacterCreator
                         case "4":
                             if (character.intelligence < 6)
                             {
-                                character.intelligence = rollTotal;
+                                character.intelligence = rollTotal + character.intelligence;
                                 statPick = false;
                             }
                             else
@@ -234,7 +248,7 @@ namespace CharacterCreator
                         case "5":
                             if (character.wisdom < 6)
                             {
-                                character.wisdom = rollTotal;
+                                character.wisdom = rollTotal + character.wisdom;
                                 statPick = false;
                             }
                             else
@@ -245,7 +259,7 @@ namespace CharacterCreator
                         case "6":
                             if (character.charisma < 6)
                             {
-                                character.charisma = rollTotal;
+                                character.charisma = rollTotal + character.charisma;
                                 statPick = false;
                             }
                             else
@@ -256,6 +270,38 @@ namespace CharacterCreator
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Selecting which die to use for the total
+        /// </summary>
+        /// <param name="a">die 1</param>
+        /// <param name="b">die 2</param>
+        /// <param name="c">die 3</param>
+        /// <param name="d">die 4</param>
+        /// <returns></returns>
+        public int DieSelect(int a, int b, int c, int d)
+        {
+            int total = 0;
+            int lowest = a;
+
+            if (b < lowest)
+                lowest = b;
+            if (c < lowest)
+                lowest = c;
+            if (d < lowest)
+                lowest = d;
+
+            if (lowest == a)
+                total = b + c + d;
+            if (lowest == b)
+                total = a + c + d;
+            if (lowest == c)
+                total = b + a + d;
+            if (lowest == d)
+                total = b + c + a;
+
+            return total;
         }
 
         /// <summary>
@@ -311,16 +357,19 @@ namespace CharacterCreator
             Console.Clear();
         }
 
-
+        /// <summary>
+        /// Selecting class for your character
+        /// </summary>
+        /// <param name="character">Character to select class for</param>
         public void ClassSelector(Character character)
         {
             Console.WriteLine("Now that you have your stats, please select your class \n" +
-                "1. Barbarian                 {0}\n" +
-                "2. Bard                      {1}\n" +
-                "3. Cleric                    {2}\n" +
-                "4. Druid                     {3}\n" +
-                "5. Fighter                   {4}\n" +
-                "6. Monk                      {5}\n" +
+                "1. Barbarian                          Strength         {0}\n" +
+                "2. Bard                               Dexterity        {1}\n" +
+                "3. Cleric                             Constitution     {2}\n" +
+                "4. Druid                              Intelligence     {3}\n" +
+                "5. Fighter                            Wisdom           {4}\n" +
+                "6. Monk                               Charisma         {5}\n" +
                 "7. Paladin \n" +
                 "8. Ranger \n" +
                 "9. Rogue \n" +
@@ -363,9 +412,13 @@ namespace CharacterCreator
                 case "11":
                     character.characterClass = Class.Wizard;
                     break;
-
+                default:
+                    Console.WriteLine("I'm sorry I didn't understand that, please try again");
+                    break;
 
             }
+            Console.ReadKey();
+            Console.Clear();
         }
     }
 }
