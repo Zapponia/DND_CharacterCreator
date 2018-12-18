@@ -18,7 +18,10 @@ namespace CharacterCreator
             Thread.Sleep(2000);
             character.StatSelectorAndRolling(character);
             Console.Clear();
-            Console.WriteLine(character.name + "\n" +
+            character.ClassSelector(character);
+            Console.WriteLine("YOUR CHARACTER \n" +
+                "Name: " + character.name + "\n" +
+                "Class: " + character.characterClass + "\n" +
                 "Strenght: " + character.strength + "\n" +
                 "Dexterity: " + character.dexterity + "\n" +
                 "Constitution: " + character.constitution + "\n" +
@@ -38,9 +41,25 @@ namespace CharacterCreator
         HalfOrc,
         Human
      }
+    
+    public enum Class
+    {
+        Barbarian,
+        Bard,
+        Cleric,
+        Druid,
+        Fighter,
+        Monk,
+        Paladin,
+        Ranger,
+        Rogue,
+        Sorcerer,
+        Wizard
+    }
+
     class Character
     {
-        //Variable declaration
+        public Class characterClass;
         public Race race;
         public string name;
         public int strength = 0;
@@ -96,6 +115,7 @@ namespace CharacterCreator
             int die1;
             int die2;
             int die3;
+            int die4;
             for (int b = 0; b < 6; b +=1)
             {
                 bool roll = true;
@@ -103,6 +123,7 @@ namespace CharacterCreator
                 while (roll)
                 {
                     Random d6 = new Random();
+
                     //Loop for shit and giggles
                     for (int i = 0; i < 3; i += 1)
                     {
@@ -137,18 +158,30 @@ namespace CharacterCreator
                     }
                     die3 = d6.Next(1, 7);
 
-                    rollTotal = die1 + die2 + die3;
+                    for (int i = 0; i < 3; i += 1)
+                    {
+                        for (int a = 1; a <= 6; a += 1)
+                        {
+                            Console.WriteLine(a);
+                            Thread.Sleep(10);
+                            Console.Clear();
+                        }
+                    }
+                    die4 = d6.Next(1, 7);
+
+                    rollTotal = DieSelect(die1, die2, die3, die4);
 
                     if (rollTotal < 6)
                     {
-                        Console.WriteLine("You rolled a {0}, {1}, {2} for a total of {3}", die1, die2, die3, rollTotal);
+                        Console.WriteLine("You rolled a {0}, {1}, {2}, {3}, and removing the smallest number you have a total of {4}", die1, die2, die3, die4, rollTotal);
                         Console.WriteLine("Unfortunately that's not enough to put into a stat, press enter to reroll");
                         Console.ReadKey();
                     }
 
                     else
                     {
-                        Console.WriteLine("You rolled a {0}, {1}, {2} for a total of {3}", die1, die2, die3, rollTotal);
+                        Console.WriteLine("You rolled a {0}, {1}, {2}, {3} and removing the smallest number you have a total of {4}", die1, die2, die3, die4, rollTotal);
+                        Console.ReadKey();
                         roll = false;
                     }
 
@@ -171,78 +204,114 @@ namespace CharacterCreator
                         case "1":
                             if (character.strength < 6)
                             {
-                                character.strength = character.strength + rollTotal;
+                                character.strength = rollTotal + character.strength;
                                 statPick = false;
                             }
                             else
                             {
                                 Console.WriteLine("That has already been picked, pick a different stat");
+                                Console.ReadKey();
                             }
                             break;
                         case "2":
                             if (character.dexterity < 6)
                             {
-                                character.dexterity = character.dexterity + rollTotal;
+                                character.dexterity = rollTotal + character.dexterity;
                                 statPick = false;
                             }
                             else
                             {
                                 Console.WriteLine("That has already been picked, pick a different stat");
+                                Console.ReadKey();
                             }
                             break;
                         case "3":
                             if (character.constitution < 6)
                             {
-                                character.constitution = character.constitution + rollTotal;
+                                character.constitution = rollTotal + character.constitution;
                                 statPick = false;
                             }
                             else
                             {
                                 Console.WriteLine("That has already been picked, pick a different stat");
+                                Console.ReadKey();
                             }
                             break;
                         case "4":
                             if (character.intelligence < 6)
                             {
-                                character.intelligence = character.intelligence + rollTotal;
+                                character.intelligence = rollTotal + character.intelligence;
                                 statPick = false;
                             }
                             else
                             {
                                 Console.WriteLine("That has already been picked, pick a different stat");
+                                Console.ReadKey();
                             }
                             break;
                         case "5":
                             if (character.wisdom < 6)
                             {
-                                character.wisdom = character.wisdom + rollTotal;
+                                character.wisdom = rollTotal + character.wisdom;
                                 statPick = false;
                             }
                             else
                             {
                                 Console.WriteLine("That has already been picked, pick a different stat");
+                                Console.ReadKey();
                             }
                             break;
                         case "6":
                             if (character.charisma < 6)
                             {
-                                character.charisma = character.charisma + rollTotal;
+                                character.charisma = rollTotal + character.charisma;
                                 statPick = false;
                             }
                             else
                             {
                                 Console.WriteLine("That has already been picked, pick a different stat");
+                                Console.ReadKey();
                             }
                             break;
                     }
-
-
                 }
             }
         }
 
         /// <summary>
-        /// Selecting the race for the character
+        /// Selecting which die to use for the total
+        /// </summary>
+        /// <param name="a">die 1</param>
+        /// <param name="b">die 2</param>
+        /// <param name="c">die 3</param>
+        /// <param name="d">die 4</param>
+        /// <returns></returns>
+        public int DieSelect(int a, int b, int c, int d)
+        {
+            int total = 0;
+            int lowest = a;
+
+            if (b < lowest)
+                lowest = b;
+            if (c < lowest)
+                lowest = c;
+            if (d < lowest)
+                lowest = d;
+
+            if (lowest == a)
+                total = b + c + d;
+            if (lowest == b)
+                total = a + c + d;
+            if (lowest == c)
+                total = b + a + d;
+            if (lowest == d)
+                total = b + c + a;
+
+            return total;
+        }
+
+        /// <summary>
+        /// Selecting race for the character, also adds the race modifiers
         /// </summary>
         /// <param name="character">Character to select race for</param>
         public void RaceSelector(Character character)
@@ -290,6 +359,69 @@ namespace CharacterCreator
                 case "7":
                     character.race = Race.Human;
                     break;
+            }
+            Console.Clear();
+        }
+
+        /// <summary>
+        /// Selecting class for your character
+        /// </summary>
+        /// <param name="character">Character to select class for</param>
+        public void ClassSelector(Character character)
+        {
+            Console.WriteLine("Now that you have your stats, please select your class \n" +
+                "1. Barbarian                          Strength         {0}\n" +
+                "2. Bard                               Dexterity        {1}\n" +
+                "3. Cleric                             Constitution     {2}\n" +
+                "4. Druid                              Intelligence     {3}\n" +
+                "5. Fighter                            Wisdom           {4}\n" +
+                "6. Monk                               Charisma         {5}\n" +
+                "7. Paladin \n" +
+                "8. Ranger \n" +
+                "9. Rogue \n" +
+                "10. Sorcerer \n" +
+                "11. Wizard", character.strength, character.dexterity, character.constitution, character.intelligence, character.wisdom, character.charisma);
+
+            string input = Console.ReadLine();
+            switch(input)
+            {
+                case "1":
+                    character.characterClass = Class.Barbarian;
+                    break;
+                case "2":
+                    character.characterClass = Class.Bard;
+                    break;
+                case "3":
+                    character.characterClass = Class.Cleric;
+                    break;
+                case "4":
+                    character.characterClass = Class.Druid;
+                    break;
+                case "5":
+                    character.characterClass = Class.Fighter;
+                    break;
+                case "6":
+                    character.characterClass = Class.Monk;
+                    break;
+                case "7":
+                    character.characterClass = Class.Paladin;
+                    break;
+                case "8":
+                    character.characterClass = Class.Ranger;
+                    break;
+                case "9":
+                    character.characterClass = Class.Rogue;
+                    break;
+                case "10":
+                    character.characterClass = Class.Sorcerer;
+                    break;
+                case "11":
+                    character.characterClass = Class.Wizard;
+                    break;
+                default:
+                    Console.WriteLine("I'm sorry I didn't understand that, please try again");
+                    break;
+
             }
             Console.Clear();
         }
