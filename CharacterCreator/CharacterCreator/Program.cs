@@ -40,6 +40,7 @@ namespace CharacterCreator
      }
     class Character
     {
+        //Variable declaration
         public Race race;
         public string name;
         public int strength = 0;
@@ -168,9 +169,9 @@ namespace CharacterCreator
                     switch (input)
                     {
                         case "1":
-                            if (character.strength == 0)
+                            if (character.strength < 6)
                             {
-                                character.strength = rollTotal;
+                                character.strength = character.strength + rollTotal;
                                 statPick = false;
                             }
                             else
@@ -179,9 +180,9 @@ namespace CharacterCreator
                             }
                             break;
                         case "2":
-                            if (character.dexterity == 0)
+                            if (character.dexterity < 6)
                             {
-                                character.dexterity = rollTotal;
+                                character.dexterity = character.dexterity + rollTotal;
                                 statPick = false;
                             }
                             else
@@ -190,9 +191,9 @@ namespace CharacterCreator
                             }
                             break;
                         case "3":
-                            if (character.constitution == 0)
+                            if (character.constitution < 6)
                             {
-                                character.constitution = rollTotal;
+                                character.constitution = character.constitution + rollTotal;
                                 statPick = false;
                             }
                             else
@@ -201,9 +202,9 @@ namespace CharacterCreator
                             }
                             break;
                         case "4":
-                            if (character.intelligence == 0)
+                            if (character.intelligence < 6)
                             {
-                                character.intelligence = rollTotal;
+                                character.intelligence = character.intelligence + rollTotal;
                                 statPick = false;
                             }
                             else
@@ -212,9 +213,9 @@ namespace CharacterCreator
                             }
                             break;
                         case "5":
-                            if (character.wisdom == 0)
+                            if (character.wisdom < 6)
                             {
-                                character.wisdom = rollTotal;
+                                character.wisdom = character.wisdom + rollTotal;
                                 statPick = false;
                             }
                             else
@@ -223,9 +224,9 @@ namespace CharacterCreator
                             }
                             break;
                         case "6":
-                            if (character.charisma == 0)
+                            if (character.charisma < 6)
                             {
-                                character.charisma = rollTotal;
+                                character.charisma = character.charisma + rollTotal;
                                 statPick = false;
                             }
                             else
@@ -240,6 +241,10 @@ namespace CharacterCreator
             }
         }
 
+        /// <summary>
+        /// Selecting the race for the character
+        /// </summary>
+        /// <param name="character">Character to select race for</param>
         public void RaceSelector(Character character)
         {
             Console.WriteLine("Please select your characters race \n" +
@@ -288,7 +293,5 @@ namespace CharacterCreator
             }
             Console.Clear();
         }
-
     }
-
 }
