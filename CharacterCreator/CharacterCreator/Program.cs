@@ -210,6 +210,7 @@ namespace CharacterCreator
                             else
                             {
                                 Console.WriteLine("That has already been picked, pick a different stat");
+                                Console.ReadKey();
                             }
                             break;
                         case "2":
@@ -221,6 +222,7 @@ namespace CharacterCreator
                             else
                             {
                                 Console.WriteLine("That has already been picked, pick a different stat");
+                                Console.ReadKey();
                             }
                             break;
                         case "3":
@@ -232,6 +234,7 @@ namespace CharacterCreator
                             else
                             {
                                 Console.WriteLine("That has already been picked, pick a different stat");
+                                Console.ReadKey();
                             }
                             break;
                         case "4":
@@ -243,6 +246,7 @@ namespace CharacterCreator
                             else
                             {
                                 Console.WriteLine("That has already been picked, pick a different stat");
+                                Console.ReadKey();
                             }
                             break;
                         case "5":
@@ -254,6 +258,7 @@ namespace CharacterCreator
                             else
                             {
                                 Console.WriteLine("That has already been picked, pick a different stat");
+                                Console.ReadKey();
                             }
                             break;
                         case "6":
@@ -265,6 +270,7 @@ namespace CharacterCreator
                             else
                             {
                                 Console.WriteLine("That has already been picked, pick a different stat");
+                                Console.ReadKey();
                             }
                             break;
                     }
@@ -417,7 +423,6 @@ namespace CharacterCreator
                     break;
 
             }
-            Console.ReadKey();
             Console.Clear();
         }
     }
