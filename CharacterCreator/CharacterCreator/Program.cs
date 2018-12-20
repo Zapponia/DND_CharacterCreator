@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using System.IO;
+using MySql.Data.MySqlClient;
 
 namespace CharacterCreator
 {
@@ -11,27 +13,64 @@ namespace CharacterCreator
     {
         static void Main(string[] args)
         {
-            Character character = new Character();
-            character.RaceSelector(character);
-            character.CharacterNaming(character);
-            Console.WriteLine("All right {0} now its time to roll your stats", character.name);
-            Thread.Sleep(2000);
-            character.StatSelectorAndRolling(character);
-            Console.Clear();
-            character.ClassSelector(character);
-            Console.WriteLine("YOUR CHARACTER \n" +
-                "Name: " + character.name + "\n" +
-                "Class: " + character.characterClass + "\n" +
-                "Strenght: " + character.strength + "\n" +
-                "Dexterity: " + character.dexterity + "\n" +
-                "Constitution: " + character.constitution + "\n" +
-                "Intelligence: " + character.intelligence + "\n" +
-                "Wisdom: " + character.wisdom + "\n" +
-                "Charisma: " + character.charisma + "\n");
+            string connectionString = "datasource=127.0.0.1;port=3306;username=root;password=;database=characterdatabase;";
+            MySqlConnection databaseConnection = new MySqlConnection(connectionString);
+            bool isRunning = true;
+            List<Character> CharacterList = new List<Character>();
+
+            while (isRunning)
+            {
+                Character character = new Character();
+                
+                character.RaceSelector(character);
+
+                character.CharacterNaming(character);
+
+                Console.WriteLine("All right {0} now its time to roll your stats", character.name);
+                Thread.Sleep(1000);
+                character.StatSelectorAndRolling(character);
+                Console.Clear();
+
+                character.ClassSelector(character);
+
+                character.AlignmentSelector(character);
+
+                Console.WriteLine("YOUR CHARACTER \n" +
+                    "Name: " + character.name + "\n" +
+                    "Race: " + character.race + "\n" +
+                    "Class: " + character.characterClass + "\n" +
+                    "Alignment: " + character.alignment + "\n" +
+                    "\n" +
+                    "Strength: " + character.strength + "\n" +
+                    "Dexterity: " + character.dexterity + "\n" +
+                    "Constitution: " + character.constitution + "\n" +
+                    "Intelligence: " + character.intelligence + "\n" +
+                    "Wisdom: " + character.wisdom + "\n" +
+                    "Charisma: " + character.charisma + "\n");
+                Console.ReadKey();
+                character.WriteToTxtDocument(character);
+                Console.Clear();
+                CharacterList.Add(character);
+                character.ListShowing(CharacterList);
+            }
         }
     }
 
-     public enum Race
+    public enum Alignment
+    {
+        Lawful_Good,
+        Neutral_Good,
+        Chaotic_Good,
+        Lawful_Neutral,
+        True_Neutral,
+        Chaotic_Neutral,
+        Lawful_Evil,
+        Neutral_Evil,
+        Chaotic_Evil
+
+    }
+
+    public enum Race
      {
         Dwarf,
         Elf,
@@ -61,6 +100,7 @@ namespace CharacterCreator
     {
         public Class characterClass;
         public Race race;
+        public Alignment alignment;
         public string name;
         public int strength = 0;
         public int dexterity = 0;
@@ -68,6 +108,93 @@ namespace CharacterCreator
         public int intelligence = 0;
         public int wisdom = 0;
         public int charisma = 0;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="characters"></param>
+        public void ListShowing(List<Character> characters)
+        {
+            Console.WriteLine("Would you like to see the stored characters? (If build is before SQL join then you can only see characters made this session) \n" +
+                   "(yes/no)");
+            string input = Console.ReadLine();
+            Console.Clear();
+            if (input.ToLower() == "yes")
+            {
+                for (int i = 0; i < characters.Count; i++)
+                {
+                    Character temp = characters[i];
+                    Console.WriteLine((i+1) + ". " + temp.name);
+                }
+                Console.WriteLine("Would you like to select one of the characters to see the full stats? (write the number of the character you would like to see, otherwise write no)");
+                input = Console.ReadLine();
+                Console.Clear();
+                if (input.ToLower() == "no")
+                {
+                    Console.Clear();
+                    return;
+                }
+
+                try
+                {
+                    int index = Convert.ToInt32(input) - 1;
+                    Character character = characters[index];
+
+                    Console.WriteLine("YOUR CHARACTER \n" +
+                        "Name: " + character.name + "\n" +
+                        "Race: " + character.race + "\n" +
+                        "Class: " + character.characterClass + "\n" +
+                        "Alignment: " + character.alignment + "\n" +
+                        "\n" +
+                        "Strength: " + character.strength + "\n" +
+                        "Dexterity: " + character.dexterity + "\n" +
+                        "Constitution: " + character.constitution + "\n" +
+                        "Intelligence: " + character.intelligence + "\n" +
+                        "Wisdom: " + character.wisdom + "\n" +
+                        "Charisma: " + character.charisma + "\n");
+                    Console.ReadKey();
+                }
+                catch
+                {
+                    Console.WriteLine("You wrote something incorrectly");
+                }
+                Console.Clear();
+            }
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="character"></param>
+        public void WriteToTxtDocument(Character character)
+        {
+            Console.WriteLine("Would you like to save your character in a text document? (Yes/No)");
+            string input = Console.ReadLine();
+
+            if (input.ToLower() == "yes")
+            {
+                string path = @"C:\Users\Bruger.DESKTOP-7TQE051\Desktop\" + character.name + "CharacterSheet.txt";
+                string text = "YOUR CHARACTER \r\n" +
+                    "Name: " + character.name + "\r\n" +
+                    "Race: " + character.race + "\r\n" +
+                    "Class: " + character.characterClass + "\r\n" +
+                    "Alignment: " + character.alignment + "\r\n" +
+                    "\r\n" +
+                    "Strength: " + character.strength + "\r\n" +
+                    "Dexterity: " + character.dexterity + "\r\n" +
+                    "Constitution: " + character.constitution + "\r\n" +
+                    "Intelligence: " + character.intelligence + "\r\n" +
+                    "Wisdom: " + character.wisdom + "\r\n" +
+                    "Charisma: " + character.charisma;
+                File.WriteAllText(path, text);
+                Console.WriteLine("Your file should be saved on your desktop now, thank you");
+            }
+            else
+                Console.WriteLine("Okay that's fine!");
+            Thread.Sleep(1000);
+            Console.Clear();
+        }
 
         /// <summary>
         /// Function to name the character
@@ -175,13 +302,13 @@ namespace CharacterCreator
                     {
                         Console.WriteLine("You rolled a {0}, {1}, {2}, {3}, and removing the smallest number you have a total of {4}", die1, die2, die3, die4, rollTotal);
                         Console.WriteLine("Unfortunately that's not enough to put into a stat, press enter to reroll");
-                        Console.ReadKey();
+                        Thread.Sleep(1000);
                     }
 
                     else
                     {
                         Console.WriteLine("You rolled a {0}, {1}, {2}, {3} and removing the smallest number you have a total of {4}", die1, die2, die3, die4, rollTotal);
-                        Console.ReadKey();
+                        Thread.Sleep(1000);
                         roll = false;
                     }
 
@@ -369,61 +496,180 @@ namespace CharacterCreator
         /// <param name="character">Character to select class for</param>
         public void ClassSelector(Character character)
         {
-            Console.WriteLine("Now that you have your stats, please select your class \n" +
-                "1. Barbarian                          Strength         {0}\n" +
-                "2. Bard                               Dexterity        {1}\n" +
-                "3. Cleric                             Constitution     {2}\n" +
-                "4. Druid                              Intelligence     {3}\n" +
-                "5. Fighter                            Wisdom           {4}\n" +
-                "6. Monk                               Charisma         {5}\n" +
-                "7. Paladin \n" +
-                "8. Ranger \n" +
-                "9. Rogue \n" +
-                "10. Sorcerer \n" +
-                "11. Wizard", character.strength, character.dexterity, character.constitution, character.intelligence, character.wisdom, character.charisma);
+            bool isRunning = true;
 
-            string input = Console.ReadLine();
-            switch(input)
+            while (isRunning)
             {
-                case "1":
-                    character.characterClass = Class.Barbarian;
-                    break;
-                case "2":
-                    character.characterClass = Class.Bard;
-                    break;
-                case "3":
-                    character.characterClass = Class.Cleric;
-                    break;
-                case "4":
-                    character.characterClass = Class.Druid;
-                    break;
-                case "5":
-                    character.characterClass = Class.Fighter;
-                    break;
-                case "6":
-                    character.characterClass = Class.Monk;
-                    break;
-                case "7":
-                    character.characterClass = Class.Paladin;
-                    break;
-                case "8":
-                    character.characterClass = Class.Ranger;
-                    break;
-                case "9":
-                    character.characterClass = Class.Rogue;
-                    break;
-                case "10":
-                    character.characterClass = Class.Sorcerer;
-                    break;
-                case "11":
-                    character.characterClass = Class.Wizard;
-                    break;
-                default:
-                    Console.WriteLine("I'm sorry I didn't understand that, please try again");
-                    break;
+                Console.WriteLine("Now that you have your stats, please select your class \n" +
+                    "1. Barbarian                          Strength         {0}\n" +
+                    "2. Bard                               Dexterity        {1}\n" +
+                    "3. Cleric                             Constitution     {2}\n" +
+                    "4. Druid                              Intelligence     {3}\n" +
+                    "5. Fighter                            Wisdom           {4}\n" +
+                    "6. Monk                               Charisma         {5}\n" +
+                    "7. Paladin \n" +
+                    "8. Ranger \n" +
+                    "9. Rogue \n" +
+                    "10. Sorcerer \n" +
+                    "11. Wizard", character.strength, character.dexterity, character.constitution, character.intelligence, character.wisdom, character.charisma);
 
+                string input = Console.ReadLine();
+                switch (input)
+                {
+                    case "1":
+                        character.characterClass = Class.Barbarian;
+                        isRunning = false;
+                        break;
+                    case "2":
+                        character.characterClass = Class.Bard;
+                        isRunning = false;
+                        break;
+                    case "3":
+                        character.characterClass = Class.Cleric;
+                        isRunning = false;
+                        break;
+                    case "4":
+                        character.characterClass = Class.Druid;
+                        isRunning = false;
+                        break;
+                    case "5":
+                        character.characterClass = Class.Fighter;
+                        isRunning = false;
+                        break;
+                    case "6":
+                        character.characterClass = Class.Monk;
+                        isRunning = false;
+                        break;
+                    case "7":
+                        character.characterClass = Class.Paladin;
+                        isRunning = false;
+                        break;
+                    case "8":
+                        character.characterClass = Class.Ranger;
+                        isRunning = false;
+                        break;
+                    case "9":
+                        character.characterClass = Class.Rogue;
+                        isRunning = false;
+                        break;
+                    case "10":
+                        character.characterClass = Class.Sorcerer;
+                        isRunning = false;
+                        break;
+                    case "11":
+                        character.characterClass = Class.Wizard;
+                        isRunning = false;
+                        break;
+                    default:
+                        Console.WriteLine("I'm sorry I didn't understand that, please try again");
+                        break;
+
+                }
+                Console.Clear();
             }
-            Console.Clear();
+        }
+
+        /// <summary>
+        /// Selecting alignment for your character
+        /// </summary>
+        /// <param name="character"></param>
+        public void AlignmentSelector(Character character)
+        {
+            bool isRunning = true;
+            if (character.characterClass == Class.Paladin)
+            {
+                Console.WriteLine("Since you're playing Paladin, your alignment has been set as Lawful Good");
+                Console.ReadKey();
+                Console.Clear();
+                character.characterClass = Class.Paladin;
+            }
+            else if (character.characterClass == Class.Monk)
+            {
+                while (isRunning)
+                {
+                    Console.WriteLine("Since you're a monk you can only play as a Lawful aligned character \n" +
+                        "1. LAWFUL GOOD \n" +
+                        "2. LAWFUL NEUTRAL \n" +
+                        "3. LAWFUL EVIL");
+                    string input = Console.ReadLine();
+                    switch (input)
+                    {
+                        case "1":
+                            character.alignment = Alignment.Lawful_Good;
+                            isRunning = false;
+                            break;
+                        case "2":
+                            character.alignment = Alignment.Lawful_Neutral;
+                            isRunning = false;
+                            break;
+                        case "3":
+                            character.alignment = Alignment.Lawful_Evil;
+                            isRunning = false;
+                            break;
+                        default:
+                            Console.WriteLine("I'm sorry I don't understand");
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                while (isRunning)
+                {
+                    Console.WriteLine("Which alignment does {0} have? \n" +
+                        "1. LAWFUL GOOD           2. NEUTRAL GOOD          3. CHAOTIC GOOD \n\n" +
+                        "4. LAWFUL NEUTRAL        5. TRUE NEUTRAL          6. CHAOTIC NEUTRAL \n\n" +
+                        "7. LAWFUL EVIL           8. NEUTRAL EVIL          9. CHAOTIC EVIL", character.name);
+                    string input = Console.ReadLine();
+
+                    switch (input)
+                    {
+                        case "1":
+                            character.alignment = Alignment.Lawful_Good;
+                            isRunning = false;
+                            break;
+                        case "2":
+                            character.alignment = Alignment.Neutral_Good;
+                            isRunning = false;
+                            break;
+                        case "3":
+                            character.alignment = Alignment.Chaotic_Good;
+                            isRunning = false;
+                            break;
+                        case "4":
+                            character.alignment = Alignment.Lawful_Neutral;
+                            isRunning = false;
+                            break;
+                        case "5":
+                            character.alignment = Alignment.True_Neutral;
+                            isRunning = false;
+                            break;
+                        case "6":
+                            character.alignment = Alignment.Chaotic_Neutral;
+                            isRunning = false;
+                            break;
+                        case "7":
+                            character.alignment = Alignment.Lawful_Evil;
+                            isRunning = false;
+                            break;
+                        case "8":
+                            character.alignment = Alignment.Neutral_Evil;
+                            isRunning = false;
+                            break;
+                        case "9":
+                            character.alignment = Alignment.Chaotic_Evil;
+                            isRunning = false;
+                            break;
+                        default:
+                            Console.WriteLine("I don't understand, try again");
+                            break;
+                    }
+
+                    Console.WriteLine("You have selected {0} as your alignment", character.alignment);
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+            }
         }
     }
 }
