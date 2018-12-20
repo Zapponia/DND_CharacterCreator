@@ -13,15 +13,18 @@ namespace CharacterCreator
     {
         static void Main(string[] args)
         {
-            string connectionString = "datasource=127.0.0.1;port=3306;username=root;password=;database=characterdatabase;";
-            MySqlConnection databaseConnection = new MySqlConnection(connectionString);
+
+
             bool isRunning = true;
             List<Character> CharacterList = new List<Character>();
 
             while (isRunning)
             {
                 Character character = new Character();
-                
+
+                character.ShowNamesFromDataBase();
+                Console.Clear();
+
                 character.RaceSelector(character);
 
                 character.CharacterNaming(character);
@@ -51,6 +54,7 @@ namespace CharacterCreator
                 character.WriteToTxtDocument(character);
                 Console.Clear();
                 CharacterList.Add(character);
+                character.AddToDatabase(character);
                 character.ListShowing(CharacterList);
             }
         }
@@ -671,5 +675,95 @@ namespace CharacterCreator
                 }
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="character"></param>
+        public void AddToDatabase(Character character)
+        {
+            string connectionString = "datasource=127.0.0.1;port=3306;username=root;password=;database=characterdatabase;";
+            MySqlConnection databaseConnection = new MySqlConnection(connectionString);
+             string query = "INSERT INTO characters (Name, Class, Race, Alignment, Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma) VALUES" +
+              " ('" + character.name +"', '"+ character.characterClass + "', '" + character.race + "', '" + character.alignment + "', '" + character.strength + "','" + character.dexterity + "','" + character.constitution + "','" + character.intelligence + "','" + character.wisdom + "','" + character.charisma + "')";
+
+            MySqlCommand commandDatabase = new MySqlCommand(query, databaseConnection);
+            MySqlDataReader reader;
+            
+            databaseConnection.Open();
+
+            
+            reader = commandDatabase.ExecuteReader();
+
+            databaseConnection.Close();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ShowNamesFromDataBase()
+        {
+            Console.WriteLine("CHARACTERS FROM THE DATABASE");
+
+            string connectionString = "datasource=127.0.0.1;port=3306;username=root;password=;database=characterdatabase;";
+            MySqlConnection databaseConnection = new MySqlConnection(connectionString);
+            string query = "SELECT * FROM characters";
+            MySqlCommand commandDatabase = new MySqlCommand(query, databaseConnection);
+            MySqlDataReader reader;
+
+            databaseConnection.Open();
+
+
+            reader = commandDatabase.ExecuteReader();
+
+            while(reader.Read())
+            {
+                Console.WriteLine(reader.GetString(0) + ". " + reader.GetString(1));
+            }
+            databaseConnection.Close();
+            databaseConnection.Open();
+            
+            bool inputRun = true;
+            int IDNumber = 0;
+            while (inputRun)
+            {
+                Console.WriteLine("Write the number of the character you want more information about");
+
+                string input = Console.ReadLine();
+                try
+                {
+                    IDNumber = Convert.ToInt32(input);
+                    inputRun = false;
+                }
+                catch
+                {
+                    Console.WriteLine("Something went wrong");
+                    return;
+                }
+            }
+            Console.Clear();
+            query = "SELECT * FROM characters WHERE ID = '" + IDNumber + "'";
+            MySqlCommand commandDatabase2 = new MySqlCommand(query, databaseConnection);
+
+            reader = commandDatabase2.ExecuteReader();
+
+            while (reader.Read())
+            {
+                Console.WriteLine("Name: " + reader.GetString(1) + "\n" +
+                    "Class: " + reader.GetString(2) + "\n" +
+                    "Race: " + reader.GetString(3) + "\n" +
+                    "Alignment: " + reader.GetString(4) + "\n" +
+                    "\n" +
+                    "Strength: " + reader.GetString(5) + "\n" +
+                    "Dexterity: " + reader.GetString(6) + "\n" +
+                    "Constitution: " + reader.GetString(7) + "\n" +
+                    "Intelligence: " + reader.GetString(8) + "\n" +
+                    "Wisdom: " + reader.GetString(9) + "\n" +
+                    "Charisma: " + reader.GetString(10) + "\n");
+            }
+            Console.ReadKey();
+            databaseConnection.Close();
+        }
+
     }
 }
